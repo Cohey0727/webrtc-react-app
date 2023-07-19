@@ -32,7 +32,6 @@ function App() {
     if (ws && message) {
       ws.send(message);
       setMessage("");
-      console.log("Sent: Hello from client!");
     }
   }, [message, ws]);
 

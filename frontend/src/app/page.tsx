@@ -1,8 +1,8 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 function App() {
-  // WebSocketオブジェクトを保持するstate
+  const [message, setMessage] = useState("");
   const [ws, setWs] = useState<WebSocket | null>(null);
 
   useEffect(() => {
@@ -32,15 +32,21 @@ function App() {
     };
   }, []);
 
-  const sendMessage = () => {
-    if (ws) {
-      ws.send("Hello from client!");
+  const sendMessage = useCallback(() => {
+    console.log({
+      ws,
+      message,
+    });
+    if (ws && message) {
+      ws.send(message);
+      setMessage("");
       console.log("Sent: Hello from client!");
     }
-  };
+  }, [message, ws]);
 
   return (
-    <div className="App">
+    <div>
+      <input onChange={(e) => setMessage(e.target.value)} value={message} />
       <button onClick={sendMessage}>Send Message</button>
     </div>
   );

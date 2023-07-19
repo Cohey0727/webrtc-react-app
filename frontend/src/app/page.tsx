@@ -35,13 +35,13 @@ function App() {
     }
   }, [message, ws]);
 
-  const { data } = useSWR("/webrtc-config", getWebrtcConfig);
+  const { data: webrtcConfig } = useSWR("/webrtc-config", getWebrtcConfig);
 
   const peerConnection = useMemo(() => {
-    if (data) {
-      return createPeerConnection(data);
+    if (webrtcConfig) {
+      return new RTCPeerConnection(webrtcConfig);
     }
-  }, [data]);
+  }, [webrtcConfig]);
 
   useEffect(() => {
     if (peerConnection && ws && wsOpen) {
@@ -70,11 +70,6 @@ async function getWebrtcConfig() {
     console.error(error);
     throw error;
   }
-}
-
-function createPeerConnection(config: RTCConfiguration) {
-  const peerConnection = new RTCPeerConnection(config);
-  return peerConnection;
 }
 
 async function parseMessageEventData<T>(data: any) {
